@@ -144,7 +144,7 @@ const ParisMap = () => {
         width: 100%;
         height: 100%;
         object-fit: contain;
-        border-radius: 8px;
+        background: transparent;
       }
       .landmark-tooltip {
         background: rgba(0, 0, 0, 0.85) !important;
