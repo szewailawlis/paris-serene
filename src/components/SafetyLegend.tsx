@@ -2,9 +2,9 @@ import { motion } from 'framer-motion';
 
 const SafetyLegend = () => {
   const levels = [
-    { label: 'Safe', color: 'bg-emerald-500', score: '8-10' },
-    { label: 'Caution', color: 'bg-amber-500', score: '6-7.9' },
-    { label: 'High Alert', color: 'bg-red-500', score: '0-5.9' },
+    { label: 'Safe', color: 'bg-emerald-500' },
+    { label: 'Caution', color: 'bg-amber-500' },
+    { label: 'Alert', color: 'bg-red-500' },
   ];
 
   return (
@@ -12,21 +12,15 @@ const SafetyLegend = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="absolute bottom-6 right-4 z-[1000]"
+      className="absolute bottom-4 right-3 z-[1000] safe-area-bottom"
     >
-      <div className="glass-card p-3">
-        <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
-          Safety Zones
-        </h3>
-        <div className="space-y-1.5">
-          {levels.map((level) => (
-            <div key={level.label} className="flex items-center gap-2">
-              <div className={`w-3 h-3 rounded-sm ${level.color} opacity-60`} />
-              <span className="text-xs text-foreground/80">{level.label}</span>
-              <span className="text-xs text-muted-foreground ml-auto">{level.score}</span>
-            </div>
-          ))}
-        </div>
+      <div className="glass-card p-2 flex items-center gap-3">
+        {levels.map((level) => (
+          <div key={level.label} className="flex items-center gap-1">
+            <div className={`w-2 h-2 rounded-sm ${level.color} opacity-70`} />
+            <span className="text-[10px] text-foreground/70">{level.label}</span>
+          </div>
+        ))}
       </div>
     </motion.div>
   );
