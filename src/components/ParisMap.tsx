@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { landmarks, arrondissements, Landmark, Arrondissement, getSafetyColor, getSafetyOpacity } from '@/data/parisData';
-import { parisArrondissementsGeoJson } from '@/data/parisGeoJson';
+import { landmarks, arrondissements, Landmark, Arrondissement, getSafetyColor } from '@/data/parisData';
 import SafetyCard from './SafetyCard';
 import HotelGallery from './HotelGallery';
 import Header from './Header';
@@ -46,41 +45,41 @@ const ParisMap = () => {
       maxZoom: 19,
     }).addTo(mapRef.current);
 
-    // Add arrondissement overlays
-    parisArrondissementsGeoJson.features.forEach((feature) => {
-      const arrondissement = arrondissements.find(a => a.id === feature.properties.id);
-      if (!arrondissement) return;
-
+    // Add arrondissement circles - minimal, non-obstructive
+    arrondissements.forEach((arrondissement) => {
       const color = getSafetyColor(arrondissement.safetyLevel);
-      const opacity = getSafetyOpacity(arrondissement.safetyLevel);
-
-      const layer = L.geoJSON(feature as GeoJSON.Feature, {
-        style: {
-          fillColor: color,
-          fillOpacity: opacity,
-          color: color,
-          weight: 1,
-          opacity: 0.6,
-        },
+      const center = arrondissement.center as [number, number];
+      
+      // Create a small circle marker
+      const circle = L.circleMarker(center, {
+        radius: 12,
+        fillColor: color,
+        fillOpacity: 0.6,
+        color: color,
+        weight: 2,
+        opacity: 0.9,
       }).addTo(mapRef.current!);
 
-      layer.on('click', () => {
+      // Add district number label
+      const labelIcon = L.divIcon({
+        html: `<div class="safety-circle-label">${arrondissement.id}</div>`,
+        className: 'safety-circle-container',
+        iconSize: [24, 24],
+        iconAnchor: [12, 12],
+      });
+
+      const labelMarker = L.marker(center, { icon: labelIcon, interactive: true })
+        .addTo(mapRef.current!);
+
+      // Click handlers
+      circle.on('click', () => {
         setSelectedLandmark(null);
         setSelectedArrondissement(arrondissement);
       });
 
-      layer.on('mouseover', (e) => {
-        e.target.setStyle({
-          fillOpacity: opacity + 0.1,
-          weight: 2,
-        });
-      });
-
-      layer.on('mouseout', (e) => {
-        e.target.setStyle({
-          fillOpacity: opacity,
-          weight: 1,
-        });
+      labelMarker.on('click', () => {
+        setSelectedLandmark(null);
+        setSelectedArrondissement(arrondissement);
       });
     });
 
@@ -123,7 +122,7 @@ const ParisMap = () => {
       markersRef.current.push(marker);
     });
 
-    // Custom tooltip styles
+    // Custom styles
     const style = document.createElement('style');
     style.textContent = `
       .landmark-marker-container {
@@ -134,15 +133,32 @@ const ParisMap = () => {
         background: rgba(0, 0, 0, 0.8) !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         border-radius: 8px !important;
-        padding: 8px 12px !important;
+        padding: 6px 10px !important;
         color: white !important;
         font-family: 'Inter', sans-serif !important;
-        font-size: 12px !important;
+        font-size: 11px !important;
         font-weight: 500 !important;
         backdrop-filter: blur(10px) !important;
       }
       .landmark-tooltip::before {
         border-top-color: rgba(0, 0, 0, 0.8) !important;
+      }
+      .safety-circle-container {
+        background: transparent !important;
+        border: none !important;
+      }
+      .safety-circle-label {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Inter', sans-serif;
+        font-size: 10px;
+        font-weight: 600;
+        color: white;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        cursor: pointer;
       }
     `;
     document.head.appendChild(style);
