@@ -1,5 +1,19 @@
 import { LatLngExpression } from 'leaflet';
 
+// Import landmark images
+import eiffelTowerImg from '@/assets/landmarks/eiffel-tower.png';
+import louvreImg from '@/assets/landmarks/louvre.png';
+import arcDeTriompheImg from '@/assets/landmarks/arc-de-triomphe.png';
+import notreDameImg from '@/assets/landmarks/notre-dame.png';
+import sacreCoeurImg from '@/assets/landmarks/sacre-coeur.png';
+import moulinRougeImg from '@/assets/landmarks/moulin-rouge.png';
+import pantheonImg from '@/assets/landmarks/pantheon.png';
+import operaGarnierImg from '@/assets/landmarks/opera-garnier.png';
+import pompidouImg from '@/assets/landmarks/pompidou.png';
+import luxembourgImg from '@/assets/landmarks/luxembourg.png';
+import orsayImg from '@/assets/landmarks/orsay.png';
+import concordeImg from '@/assets/landmarks/concorde.png';
+
 export interface Arrondissement {
   id: number;
   name: string;
@@ -14,6 +28,7 @@ export interface Landmark {
   name: string;
   position: LatLngExpression;
   icon: string;
+  image: string;
   description: string;
   arrondissement: number;
 }
@@ -59,6 +74,7 @@ export const landmarks: Landmark[] = [
     name: 'Eiffel Tower',
     position: [48.8584, 2.2945],
     icon: '🗼',
+    image: eiffelTowerImg,
     description: 'Iconic iron lattice tower on the Champ de Mars',
     arrondissement: 7,
   },
@@ -67,6 +83,7 @@ export const landmarks: Landmark[] = [
     name: 'Louvre Museum',
     position: [48.8606, 2.3376],
     icon: '🏛️',
+    image: louvreImg,
     description: 'World\'s largest art museum and historic monument',
     arrondissement: 1,
   },
@@ -75,6 +92,7 @@ export const landmarks: Landmark[] = [
     name: 'Arc de Triomphe',
     position: [48.8738, 2.2950],
     icon: '🏛️',
+    image: arcDeTriompheImg,
     description: 'Triumphal arch honoring those who fought for France',
     arrondissement: 8,
   },
@@ -83,6 +101,7 @@ export const landmarks: Landmark[] = [
     name: 'Notre Dame',
     position: [48.8530, 2.3499],
     icon: '⛪',
+    image: notreDameImg,
     description: 'Medieval Catholic cathedral on the Île de la Cité',
     arrondissement: 4,
   },
@@ -91,8 +110,72 @@ export const landmarks: Landmark[] = [
     name: 'Sacré-Cœur',
     position: [48.8867, 2.3431],
     icon: '⛪',
+    image: sacreCoeurImg,
     description: 'Romano-Byzantine basilica on Montmartre',
     arrondissement: 18,
+  },
+  {
+    id: 'moulin-rouge',
+    name: 'Moulin Rouge',
+    position: [48.8841, 2.3322],
+    icon: '🎭',
+    image: moulinRougeImg,
+    description: 'Famous cabaret in Pigalle district',
+    arrondissement: 18,
+  },
+  {
+    id: 'pantheon',
+    name: 'Panthéon',
+    position: [48.8462, 2.3464],
+    icon: '🏛️',
+    image: pantheonImg,
+    description: 'Mausoleum containing remains of French citizens',
+    arrondissement: 5,
+  },
+  {
+    id: 'opera',
+    name: 'Opéra Garnier',
+    position: [48.8720, 2.3316],
+    icon: '🎭',
+    image: operaGarnierImg,
+    description: 'Opulent 19th-century opera house',
+    arrondissement: 9,
+  },
+  {
+    id: 'pompidou',
+    name: 'Centre Pompidou',
+    position: [48.8606, 2.3522],
+    icon: '🎨',
+    image: pompidouImg,
+    description: 'Modern art museum with inside-out architecture',
+    arrondissement: 4,
+  },
+  {
+    id: 'luxembourg',
+    name: 'Luxembourg Gardens',
+    position: [48.8462, 2.3371],
+    icon: '🏰',
+    image: luxembourgImg,
+    description: 'Beautiful palace and gardens in the 6th',
+    arrondissement: 6,
+  },
+  {
+    id: 'orsay',
+    name: 'Musée d\'Orsay',
+    position: [48.8600, 2.3266],
+    icon: '🖼️',
+    image: orsayImg,
+    description: 'Impressionist art in a former railway station',
+    arrondissement: 7,
+  },
+  {
+    id: 'concorde',
+    name: 'Place de la Concorde',
+    position: [48.8656, 2.3212],
+    icon: '⛲',
+    image: concordeImg,
+    description: 'Historic square with Egyptian obelisk',
+    arrondissement: 8,
   },
 ];
 

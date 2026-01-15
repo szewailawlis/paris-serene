@@ -1,21 +1,17 @@
 import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { useState } from 'react';
+import { landmarks } from '@/data/parisData';
 
 interface LandmarkLegendProps {
   onLandmarkClick: (landmarkId: string) => void;
 }
 
-const landmarks = [
-  { id: 'eiffel', icon: '🗼', name: 'Eiffel' },
-  { id: 'louvre', icon: '🏛️', name: 'Louvre' },
-  { id: 'arc', icon: '🏛️', name: 'Arc' },
-  { id: 'notre-dame', icon: '⛪', name: 'Notre Dame' },
-  { id: 'sacre-coeur', icon: '⛪', name: 'Sacré-Cœur' },
-];
-
 const LandmarkLegend = ({ onLandmarkClick }: LandmarkLegendProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // Show first 6 landmarks in legend
+  const legendLandmarks = landmarks.slice(0, 6);
 
   return (
     <motion.div
@@ -25,7 +21,7 @@ const LandmarkLegend = ({ onLandmarkClick }: LandmarkLegendProps) => {
       className="absolute top-14 right-3 z-[1000]"
     >
       {isExpanded ? (
-        <div className="glass-card p-2 space-y-0.5">
+        <div className="glass-card p-2 space-y-0.5 max-h-[60vh] overflow-y-auto">
           <button
             onClick={() => setIsExpanded(false)}
             className="w-full flex items-center justify-between px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider"
@@ -42,8 +38,12 @@ const LandmarkLegend = ({ onLandmarkClick }: LandmarkLegendProps) => {
               }}
               className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg active:bg-white/10 transition-colors text-left"
             >
-              <span className="text-base">{landmark.icon}</span>
-              <span className="text-xs text-foreground/80">{landmark.name}</span>
+              <img 
+                src={landmark.image} 
+                alt={landmark.name}
+                className="w-8 h-8 object-contain rounded"
+              />
+              <span className="text-xs text-foreground/80 line-clamp-1">{landmark.name}</span>
             </button>
           ))}
         </div>
@@ -52,8 +52,17 @@ const LandmarkLegend = ({ onLandmarkClick }: LandmarkLegendProps) => {
           onClick={() => setIsExpanded(true)}
           className="glass-card p-2 flex items-center gap-1"
         >
-          <span className="text-sm">🗼</span>
-          <ChevronRight className="w-3 h-3 text-muted-foreground" />
+          <div className="flex -space-x-2">
+            {legendLandmarks.slice(0, 3).map((landmark) => (
+              <img 
+                key={landmark.id}
+                src={landmark.image} 
+                alt={landmark.name}
+                className="w-6 h-6 object-contain rounded border border-white/10"
+              />
+            ))}
+          </div>
+          <ChevronRight className="w-3 h-3 text-muted-foreground ml-1" />
         </button>
       )}
     </motion.div>
