@@ -39,9 +39,9 @@ const SafetyCard = ({ arrondissement, onClose }: SafetyCardProps) => {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 20, scale: 0.95 }}
         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute top-4 left-4 z-[1000] w-80"
+        className="absolute top-14 left-3 right-3 z-[1000] max-w-[calc(100vw-24px)]"
       >
-        <div className="glass-card p-5">
+        <div className="glass-card p-4">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
               {getIcon()}

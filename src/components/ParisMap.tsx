@@ -89,15 +89,15 @@ const ParisMap = () => {
       const markerIcon = L.divIcon({
         html: `
           <div class="relative group cursor-pointer">
-            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/30 border-2 border-white/20 transition-transform hover:scale-110">
-              <span class="text-2xl">${landmark.icon}</span>
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/30 border-2 border-white/20 transition-transform active:scale-95">
+              <span class="text-xl">${landmark.icon}</span>
             </div>
-            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-amber-500 rotate-45 -z-10"></div>
+            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-amber-500 rotate-45 -z-10"></div>
           </div>
         `,
         className: 'landmark-marker-container',
-        iconSize: [48, 56],
-        iconAnchor: [24, 56],
+        iconSize: [40, 48],
+        iconAnchor: [20, 48],
       });
 
       const marker = L.marker(landmark.position, { icon: markerIcon })
@@ -116,7 +116,7 @@ const ParisMap = () => {
       marker.bindTooltip(landmark.name, {
         permanent: false,
         direction: 'top',
-        offset: [0, -50],
+        offset: [0, -40],
         className: 'landmark-tooltip',
       });
 
