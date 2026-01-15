@@ -134,7 +134,7 @@ const ParisMap = () => {
         justify-content: center;
         cursor: pointer;
         transition: transform 0.2s ease;
-        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
       }
       .landmark-3d-marker:hover,
       .landmark-3d-marker:active {
@@ -144,7 +144,8 @@ const ParisMap = () => {
         width: 100%;
         height: 100%;
         object-fit: contain;
-        background: transparent;
+        border-radius: 8px;
+        mix-blend-mode: multiply;
       }
       .landmark-tooltip {
         background: rgba(0, 0, 0, 0.85) !important;
