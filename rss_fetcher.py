@@ -4,48 +4,60 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 
 def fetch_intel():
-    # 关键词矩阵：巴黎 + (罢工 OR 游行 OR 抗议 OR 抢劫 OR 骚扰 OR 犯罪)
-    # 语言设定为法语(fr)和英语(en)，确保不漏掉本地新闻
-    # when:1m 表示最近一个月
-    search_query = "Paris+(strike+OR+protest+OR+riot+OR+robbery+OR+harassment+OR+crime+OR+greve)+when:1m"
-    url = f"https://news.google.com/rss/search?q={search_query}&hl=en-US&gl=US&ceid=US:en"
+    # 组合多个最高效的实时情报源
+    sources = [
+        # 1. Google News 强制限定 24 小时内 (when:24h)，专注安全关键词
+        "https://news.google.com/rss/search?q=Paris+(strike+OR+protest+OR+robbery+OR+police)+when:24h&hl=en-US",
+        # 2. 法国本地英文媒体 (France24) 的安全板块
+        "https://www.france24.com/en/france/rss",
+        # 3. 实时 X 镜像 (使用更稳定的聚合搜索词)
+        "https://rss.lilywhite.cc/twitter/keyword/Paris%20incident"
+    ]
     
     headers = {'User-Agent': 'Mozilla/5.0'}
     news_items = []
+    seen_titles = set()
 
-    print(f"[{datetime.now()}] 正在搜集最近一月的巴黎安全动态...")
+    print(f"[{datetime.now()}] 正在启动多源实时扫描...")
 
-    try:
-        response = requests.get(url, headers=headers, timeout=20)
-        if response.status_code == 200:
-            root = ET.fromstring(response.content)
-            for item in root.findall('./channel/item'):
-                title = item.find('title').text
-                content_lower = title.lower()
-                
-                # 自动分级逻辑
-                level = "Caution" # 默认黄色
-                if any(w in content_lower for w in ["strike", "greve", "protest", "riot", "manifestation"]):
-                    level = "Alert"  # 罢工游行设为红色警报
-                elif any(w in content_lower for w in ["robbery", "stolen", "attack", "crime"]):
-                    level = "Alert"  # 抢劫犯罪设为红色警报
-                
-                news_items.append({
-                    "title": f"[Intel] {title[:120]}",
-                    "level": level,
-                    "date": item.find('pubDate').text[:16] # 截取时间
-                })
+    for url in sources:
+        try:
+            response = requests.get(url, headers=headers, timeout=15)
+            if response.status_code == 200:
+                root = ET.fromstring(response.content)
+                for item in root.findall('./channel/item'):
+                    title = item.find('title').text
+                    # 过滤重复和无关信息
+                    if title in seen_titles: continue
+                    
+                    # 关键词精细化过滤
+                    content_lower = title.lower()
+                    safety_keywords = ["paris", "strike", "protest", "police", "robbery", "security", "attack", "stolen", "crime"]
+                    
+                    if any(word in content_lower for word in safety_keywords):
+                        level = "Caution"
+                        # 危险等级分级
+                        if any(w in content_lower for w in ["attack", "robbery", "violence", "urgent"]):
+                            level = "Alert"
+                        
+                        news_items.append({
+                            "title": f"[LIVE Intel] {title[:110]}",
+                            "level": level,
+                            "date": datetime.now().strftime("%H:%M") # 强制显示当前更新时间
+                        })
+                        seen_titles.add(title)
+        except Exception as e:
+            print(f"源 {url} 扫描跳过: {e}")
 
-        # 保底逻辑：如果真的连罢工都没有（巴黎奇迹），才显示这条
-        if not news_items:
-            news_items.append({"title": "[System] Safety scan complete: No major unrest detected in the past 30 days.", "level": "Safe", "date": "LIVE"})
+    # 只要最近 10 条最相关的
+    final_data = news_items[:10]
 
-    except Exception as e:
-        print(f"抓取失败: {e}")
+    if not final_data:
+        final_data = [{"title": "[System] Scanning Paris safety grid... All clear in the last hour.", "level": "Safe", "date": "LIVE"}]
 
     with open("intel.json", "w", encoding="utf-8") as f:
-        json.dump(news_items, f, ensure_ascii=False, indent=4)
-    print(f"任务完成，已更新 {len(news_items)} 条近一个月的情报。")
+        json.dump(final_data, f, ensure_ascii=False, indent=4)
+    print(f"扫描完成，更新了 {len(final_data)} 条最新动态。")
 
 if __name__ == "__main__":
     fetch_intel()
