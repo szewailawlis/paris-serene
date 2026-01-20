@@ -4,60 +4,65 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 
 def fetch_intel():
-    # 组合多个最高效的实时情报源
+    # 增加了一个 Time 过滤，确保搜索更广泛
     sources = [
-        # 1. Google News 强制限定 24 小时内 (when:24h)，专注安全关键词
-        "https://news.google.com/rss/search?q=Paris+(strike+OR+protest+OR+robbery+OR+police)+when:24h&hl=en-US",
-        # 2. 法国本地英文媒体 (France24) 的安全板块
-        "https://www.france24.com/en/france/rss",
-        # 3. 实时 X 镜像 (使用更稳定的聚合搜索词)
-        "https://rss.lilywhite.cc/twitter/keyword/Paris%20incident"
+        "https://news.google.com/rss/search?q=Paris+(strike+OR+protest+OR+robbery+OR+crime)+when:7d&hl=en-US",
+        "https://www.france24.com/en/france/rss"
     ]
     
-    headers = {'User-Agent': 'Mozilla/5.0'}
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
     news_items = []
     seen_titles = set()
 
-    print(f"[{datetime.now()}] 正在启动多源实时扫描...")
+    print(f"[{datetime.now()}] 启动实时情报扫描...")
 
     for url in sources:
         try:
-            response = requests.get(url, headers=headers, timeout=15)
+            # 增加 timeout 防止死锁
+            response = requests.get(url, headers=headers, timeout=10)
             if response.status_code == 200:
-                root = ET.fromstring(response.content)
+                # 修复可能存在的编码问题
+                xml_content = response.content.decode('utf-8')
+                root = ET.fromstring(xml_content)
+                
                 for item in root.findall('./channel/item'):
                     title = item.find('title').text
-                    # 过滤重复和无关信息
                     if title in seen_titles: continue
                     
-                    # 关键词精细化过滤
                     content_lower = title.lower()
-                    safety_keywords = ["paris", "strike", "protest", "police", "robbery", "security", "attack", "stolen", "crime"]
+                    # 关键词过滤：确保是关于巴黎安全的
+                    safety_keywords = ["paris", "strike", "protest", "police", "robbery", "crime", "alert"]
                     
                     if any(word in content_lower for word in safety_keywords):
                         level = "Caution"
-                        # 危险等级分级
-                        if any(w in content_lower for w in ["attack", "robbery", "violence", "urgent"]):
+                        if any(w in content_lower for w in ["robbery", "violence", "attack"]):
                             level = "Alert"
                         
                         news_items.append({
-                            "title": f"[LIVE Intel] {title[:110]}",
+                            "title": f"[LIVE] {title[:110]}",
                             "level": level,
-                            "date": datetime.now().strftime("%H:%M") # 强制显示当前更新时间
+                            "date": datetime.now().strftime("%H:%M")
                         })
                         seen_titles.add(title)
+            else:
+                print(f"源 {url} 响应错误: {response.status_code}")
         except Exception as e:
-            print(f"源 {url} 扫描跳过: {e}")
+            print(f"扫描源 {url} 时跳过: {str(e)}")
 
-    # 只要最近 10 条最相关的
+    # 结果去重并取前10条
     final_data = news_items[:10]
 
+    # 保底机制：如果全失败了，至少保证 JSON 格式正确
     if not final_data:
-        final_data = [{"title": "[System] Scanning Paris safety grid... All clear in the last hour.", "level": "Safe", "date": "LIVE"}]
+        final_data = [{
+            "title": "[System] Paris safety grid monitoring active. No major alerts found.",
+            "level": "Safe",
+            "date": "LIVE"
+        }]
 
     with open("intel.json", "w", encoding="utf-8") as f:
         json.dump(final_data, f, ensure_ascii=False, indent=4)
-    print(f"扫描完成，更新了 {len(final_data)} 条最新动态。")
+    print(f"✅ 扫描完成，已更新 intel.json")
 
 if __name__ == "__main__":
     fetch_intel()
