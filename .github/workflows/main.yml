@@ -27,6 +27,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add public/intel.json || git add intel.json
+          git add intel.json || echo "No changes to commit"
           git commit -m "Auto-update intel data" || exit 0
           git push
