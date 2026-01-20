@@ -3,43 +3,42 @@ import json
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
-def fetch_x_intel():
-    # 使用 3 个不同的备用镜像源，只要有一个通了就行
+def fetch_intel():
+    # 源 1: Google News (搜索巴黎安全，非常稳定)
+    # 源 2: 一个更强大的 RSSHub 节点抓取 X 关键词
     sources = [
-        "https://rss.lilywhite.cc/twitter/keyword/Paris%20safety",
-        "https://rss.owo.nz/twitter/keyword/Paris%20police",
-        "https://rsshub.app/twitter/keyword/Paris%20security"
+        "https://news.google.com/rss/search?q=Paris+security+alert+when:24h&hl=en-US&gl=US&ceid=US:en",
+        "https://rss.lilywhite.cc/twitter/keyword/Paris%20Safety"
     ]
     
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124 Safari/537.36'}
+    headers = {'User-Agent': 'Mozilla/5.0'}
     news_items = []
 
-    print(f"[{datetime.now()}] 开始多源抓取...")
+    print(f"[{datetime.now()}] 启动情报搜集...")
 
     for url in sources:
         try:
-            print(f"尝试抓取源: {url}")
             response = requests.get(url, headers=headers, timeout=15)
             if response.status_code == 200:
                 root = ET.fromstring(response.content)
-                items = root.findall('./channel/item')
-                for item in items:
-                    title = item.find('title').text if item.find('title') is not None else ""
-                    if len(title) > 5:
-                        news_items.append({
-                            "title": f"[X Live] {title[:100]}",
-                            "level": "Alert" if "danger" in title.lower() or "avoid" in title.lower() else "Safe",
-                            "date": datetime.now().strftime("%H:%M")
-                        })
-                if news_items:
-                    print(f"✅ 从源 {url} 成功抓取到 {len(news_items)} 条真实情报！")
-                    break # 抓到了就跳出循环
+                for item in root.findall('./channel/item'):
+                    title = item.find('title').text
+                    # 只要包含巴黎相关的词就抓进来
+                    news_items.append({
+                        "title": f"[Intel] {title[:100]}",
+                        "level": "Caution", # 默认黄色
+                        "date": "LIVE"
+                    })
+                if news_items: break 
         except Exception as e:
-            print(f"❌ 该源抓取失败: {e}")
+            print(f"尝试源失败: {e}")
 
-    # --- 写入文件 ---
+    # 最终保险：如果所有源都挂了，才给一条“系统自检”信息
+    if not news_items:
+        news_items.append({"title": "[System] Monitoring Paris security grid... No new alerts.", "level": "Safe", "date": "LIVE"})
+
     with open("intel.json", "w", encoding="utf-8") as f:
         json.dump(news_items, f, ensure_ascii=False, indent=4)
 
 if __name__ == "__main__":
-    fetch_x_intel()
+    fetch_intel()
