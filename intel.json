@@ -1,7 +1,52 @@
 [
     {
-        "title": "[System] Safety scan complete: No major unrest detected in the past 30 days.",
-        "level": "Safe",
-        "date": "LIVE"
+        "title": "[LIVE Intel] French police, football fans, and a history of violence: ‘They don’t care’ - The Athletic - The New York Times",
+        "level": "Alert",
+        "date": "17:23"
+    },
+    {
+        "title": "[LIVE Intel] Probe opened after migrant worker dies in police custody in Paris - Le Monde.fr",
+        "level": "Caution",
+        "date": "17:23"
+    },
+    {
+        "title": "[LIVE Intel] Community Scenes | Martin Luther King Jr. Day Parade and Program - theparisnews.com",
+        "level": "Caution",
+        "date": "17:23"
+    },
+    {
+        "title": "[LIVE Intel] French MPs Endorse 30-Day Annual Ceiling on Transport Strikes - VisaHQ",
+        "level": "Caution",
+        "date": "17:23"
+    },
+    {
+        "title": "[LIVE Intel] Men's Fashion Week kicks off in Paris with tributes for Valentino - mydailyrecord.com",
+        "level": "Caution",
+        "date": "17:23"
+    },
+    {
+        "title": "[LIVE Intel] Iran warns protesters who joined ‘riots’ to surrender within three days - The Times of Israel",
+        "level": "Caution",
+        "date": "17:23"
+    },
+    {
+        "title": "[LIVE Intel] New footage has been released of the jewel heist inside the Louvre Museum in Paris. - facebook.com",
+        "level": "Caution",
+        "date": "17:23"
+    },
+    {
+        "title": "[LIVE Intel] Paris investigators say stolen Louvre jewels were hidden in parking lot as thieves ditched getaway vehicles - ",
+        "level": "Caution",
+        "date": "17:23"
+    },
+    {
+        "title": "[LIVE Intel] Municipal Elections 2026: What Are the Candidates’ Security Proposals and Who Says What? - Sortir à Paris",
+        "level": "Caution",
+        "date": "17:23"
+    },
+    {
+        "title": "[LIVE Intel] Paris vs Washington in the cold Arctic war? France openly mocks Trump’s Greenland plans - The Economic Times",
+        "level": "Caution",
+        "date": "17:23"
     }
 ]
